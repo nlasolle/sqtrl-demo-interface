@@ -6,16 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Flexible querying system</title>
-
-    <link rel=stylesheet href="codemirror/codemirror-5.58.2/doc/docs.css">
     <link rel="stylesheet" href="codemirror/codemirror-5.58.2/lib/codemirror.css">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
         integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
 
 
     <script src="codemirror/codemirror-5.58.2/lib/codemirror.js"></script>
     <script src="codemirror/codemirror-5.58.2/addon/edit/matchbrackets.js"></script>
+    <script src="codemirror/codemirror-5.58.2/addon/autorefresh.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
@@ -28,19 +30,20 @@
         <!-- <div w3-include-html="navbar.html"></div> -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>Query generation details</h3>
+                <h3><span id="sidebarHeaderLabel"></span></h3>
             </div>
             <div style="padding: 3%;">
-                <h2>Name: Q1</h2>
+                <h2><span id="name"></span> <span id="nameValue"></span></h2>a
                 <ul class="list-unstyled components">
                     <li>
-                        <span>Global cost: 10</span>
+                        <span id="globalCostLabel"></span>
+                        <span id="localCostLabel"></span>
                     </li>
                     <li>
                         <a>Test</a>
                     </li>
                     <li>
-                        <a data-toggle="collapse" aria-expanded="true" class="dropdown-toggle">Applied rule</a>
+                        <a data-toggle="collapse" aria-expanded="true" class="dropdown-toggle"><span id="appliedRuleLabel"></span></a>
                         <ul class="collapse list-unstyled" id="pageSubmenu">
                             <li>
                                 tutu
@@ -51,47 +54,68 @@
                         </ul>
                     </li>
 
-                    <li>
-                        <a>Configuration</a>
-                    </li>
+         
 
                 </ul>
             </div>
             <div class="sidebar-footer">
                 <button type="button" id="sidebarCollapse" class="btn btn-outline-info btn-block">
-                    <i class="fas fa-align-left"></i>
-                    <span>Hide details</span>
+                    <i class="fas fa-eye-slash"></i>
+                    <span id="hideDetails"></span>
                 </button>
             </div>
         </nav>
         <!-- Page Content  -->
         <div id="content">
+            <div class="row">
+                <div class="col-md-10 left">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#tab1" data-toggle="tab"><span id="formBasedTab"></span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#tab2" data-toggle="tab">SPARQL</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#tab3" data-toggle="tab"><span id="naturalLanguageTab"></span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-1 right" style="padding-top:0.5%; padding-left:5.5%">
+                  <i class="fa fa-language fa-2x" aria-hidden="true"></i> 
+                </div>
+                <div class="col-md-1 right" style="padding-top:0.75%; padding-left:1%;margin:0%">
+                  <select class="form-select" id="languageSelect">
+                    <option selected value="0">English</option>
+                    <option value="1">French</option>
+                  </select>
+                </div>
+              </div>
 
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#tab1" data-toggle="tab">Form-based</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab2" data-toggle="tab">SPARQL</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#tab3" data-toggle="tab">Natural language</a>
-                </li>
-            </ul>
-
-            <div class="tab-content">
+            <div class="tab-content" style="padding-top: 1em;">
                 <div id="tab1" class="tab-pane fade show active">
-                    <h2>Query generation 1</h2>
 
                     <button type="button" id="sparqlGenerationButton" class="btn btn-outline-info">
-                        <span>Generate SPARQL query</span>
+                        <span id="generateButton"></span>
                     </button>
                 </div>
 
                 <div id="tab2" class="tab-pane fade show">
-                    <div class="form-group">
-                        <h2>SPARQL query</h2>
-                        <form><textarea id="initialSPARQLInput">
+
+                    <div id="accordion">
+                        <div class="card">
+                          <div class="card-header" id="headingOne">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <span id="sparqlQuery"></span>
+                              </button>
+                            </h5>
+                          </div>
+                      
+                          <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <form><textarea id="initialSPARQLInput">
 #Example: letters sent by Henri Poincaré to Gosta Mittag-Leffer between 1882 and 1887.
 PREFIX ahpo: <http://e-hp.ahp-numerique.fr/ahpo#>
 PREFIX time: <http://www.w3.org/2006/time#>
@@ -107,64 +131,148 @@ WHERE {
     ?l ahpo:writingDate ?d 
     FILTER (YEAR(?d) >= 1882 & YEAR(?d) <= 1887)
 }  
-                        </textarea></form>
-                    </div>
+                                    </textarea></form>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card">
+                          <div class="card-header" id="headingTwo">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <span id="generatedSparqlQuery"></span>
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                            <div class="card-body">
+                                <div class="form-group">                        
+                                    <form><textarea id="generatedSPARQLInput">
+#Example: letters sent by Henri Poincaré to Gosta Mittag-Leffer between 1882 and 1887.
+PREFIX ahpo: <http://e-hp.ahp-numerique.fr/ahpo#>
+PREFIX time: <http://www.w3.org/2006/time#>
 
-                    <button type="button" id="sparqlExecutionButton" class="btn btn-outline-info">
-                        <span>Execute SPARQL query</span>
-                    </button>
-                </div>
+SELECT ?l ?d
+WHERE {
+    ?l ahpo:sentBy ?x .
+    ?x ahpo:firstName "Henri" .
+    ?x ahpo:familyName "Poincaré" .
+    ?l ahpo:sentTo ?y . 
+    ?l ahpo:firstName "Gosta" . 
+    ?l ahpo:familyName "Mittag-Leffler" .
+    ?l ahpo:writingDate ?d 
+    FILTER (YEAR(?d) >= 1882 & YEAR(?d) <= 1887)
+}  
+                                    </textarea></form>
+                                </div>
+            
+                                <button type="button" id="sparqlExecutionButton" class="btn btn-outline-info">
+                                    <span id="executeButton"></span>
+                                </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="card">
+                          <div class="card-header" id="headingThree">
+                            <h5 class="mb-0">
+                              <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <span id="queryResults"></span>
+                              </button>
+                            </h5>
+                          </div>
+                          <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+                            <div class="card-body">
+                                <table id="resultsTable" class="table table-striped">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Lettre</th>
+                                        <th scope="col">Titre</th>
+                                        <th scope="col">Expéditeur</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                  </table>
 
-                <div id="tab3" class="tab-pane fade show">
-                    <h2>Query generation 3</h2>
-                </div>
-            </div>
+                                  <button type="button" id="moreButton" class="btn btn-outline-primary">
+                                    <span id="moreButtonLabel"></span>
+                                </button>
+                                <button type="button" id="exportButton" class="btn btn-outline-success">
+                                    <span id="exportButtonLabel"></span>
+                                </button>
+                            </div>
+                            
+                          </div>
+                          <div class="card">
+                            <div class="card-header" id="headingThree">
+                              <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
+                                  <span id="treeTitle"></span>
+                                </button>
+                              </h5>
+                            </div>
+                            <div id="collapseFour" class="collapse" aria-labelledby="headingThree">
+                              <div class="card-body" style="padding-bottom:5em;">
+                                <button id="backwardButton" class="btn"><i class="fas fa-backward"></i></button>
+                                <button id="forwardButton" class="btn"><i class="fas fa-forward"></i></button>
+                                <div class="container" style="padding-bottom:5em;">
+                                  
 
-            <div class="container">
-
-                <div class="tree">
-                    <ul>
-                        <li>
-                            <a href="#">Q</a>
-                            <ul>
-                                <li>
-                                    <a href="#">Q1</a>
-                                    <ul>
-                                        <li>
-                                            <a href="#">Q11</a>
-
-                                        </li>
-                                        <li>
-                                            <a href="#">Q12</a>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="#">Q2</a>
-                                    <ul>
-                                        <ul>
+                                    <div id="historyTree" class="tree">
+                                       <!-- <ul>
                                             <li>
-                                                <a href="#">Q21</a>
+                                                <a href="#">Q</a>
                                                 <ul>
                                                     <li>
-                                                        <a href="#">Q211</a>
+                                                        <a href="#">Q1</a>
+                                                        <ul>
+                                                            <li>
+                                                                <a href="#">Q11</a>
+
+                                                            </li>
+                                                            <li>
+                                                                <a href="#">Q12</a>
+                                                            </li>
+                                                        </ul>
                                                     </li>
                                                     <li>
-                                                        <a href="#">Q212</a>
+                                                        <a href="#">Q2</a>
+                                                        <ul>
+                                                            <ul>
+                                                                <li>
+                                                                    <a href="#">Q21</a>
+                                                                    <ul>
+                                                                        <li>
+                                                                            <a href="#">Q211</a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">Q212</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="#">Q22</a>
+                                                                </li>
+                                                            </ul>
+                                                        </ul>
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li>
-                                                <a href="#">Q22</a>
-                                            </li>
-                                        </ul>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                                        </ul>-->
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+
+      
+                    </div>
                 </div>
-            </div>
+                <div id="tab3" class="tab-pane fade show">
+                    <h2>Query generation 3</h2>
+                </div>
         </div>
 
     </div>
@@ -175,11 +283,20 @@ WHERE {
     integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
     crossorigin="anonymous"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="js/language.js"></script>
+<script type="text/javascript" src="js/data.js"></script>
 <script type="text/javascript" src="js/event.js"></script>
 <script type="text/javascript" src="js/sparql.js"></script>
 <script>
-    var generatedQueryEditor = CodeMirror.fromTextArea(document.getElementById("initialSPARQLInput"), {
+    var initialQueryEditor = CodeMirror.fromTextArea(document.getElementById("initialSPARQLInput"), {
         mode: "application/sparql-query",
+        autoRefresh : true,
+        matchBrackets: true
+    });
+
+    var generatedQueryEditor = CodeMirror.fromTextArea(document.getElementById("generatedSPARQLInput"), {
+        mode: "application/sparql-query",
+        autoRefresh : true,
         matchBrackets: true
     });
 

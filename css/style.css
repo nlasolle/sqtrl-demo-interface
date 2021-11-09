@@ -173,7 +173,7 @@ ul.CTAs a {
     Transformation tree
 ----------------------------------------------------- */
 .tree {
-	padding-left: 20%;
+    padding-left: 20%;
 	margin: 0 auto;
 	
 }
@@ -268,7 +268,8 @@ right connector from last child*/
 /*Time for some hover effects*/
 /*We will apply the hover effect the the lineage of the element also*/
 .tree li a:hover{
-	background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+    background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+    cursor: pointer;
 }
 /*Connector styles on hover*/
 .tree li a:hover{
