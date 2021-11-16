@@ -12,6 +12,16 @@ $(document).ready(function () {
         $('#sidebar').toggleClass('active');
     });
 
+    $('#exportButton').on('click', function () {
+        exportSelectedResults();
+    });
+
+
+    $('#executeButton').on('click', function () {
+        console.dir(initialQueryEditor.getValue());
+        getQueryResults(initialQueryEditor.getValue());
+    });
+
     $('#moreButton').on('click', function () {
         
         if(k == 1){
@@ -23,7 +33,7 @@ $(document).ready(function () {
             currentElement++;
             k++;
         }
-        else if(k == 2){
+        else if(k == 3){
             addChildToNode("Q", "Q2");
             let element = {};
             element.parent = "Q";
@@ -41,8 +51,7 @@ $(document).ready(function () {
             k++;
         }
 
-        $("#backwardButton").prop('disabled', false);
-        
+        $("#backwardButton").prop('disabled', false);    
     });
 
     $('#backwardButton').on('click', function () {
@@ -89,18 +98,20 @@ $(document).ready(function () {
         pagingType: "simple", // "simple" option for 'Previous' and 'Next' buttons only
         pageLength : 5,
         lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
-        bFilter: false,
-        autoWidth: false
+        bFilter: true,
+        bDestroy: true,
+        empty: true,
+        select: {
+            style: 'multi',
+            blurable: true
+        },
+        autoWidth: true
     } );
 
    $("#resultsTable > tbody").empty();
-   resultsTable.clear();
-    for (i =0 ; i < 10 ; i++){
-        resultsTable.row.add([i, "Une valeur", "tutu à tata, 21 janvier 2011", "Super !"]);
-    }
+    resultsTable.clear();
 
     resultsTable.draw();
-
     setLanguage(0);
     initTree();
 });

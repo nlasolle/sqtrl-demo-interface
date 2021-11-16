@@ -64,3 +64,63 @@ function updateSidebarContent(node){
 
     $('#nameValue').html(node);
 }
+
+function putResultsToTable(results){
+    
+
+    $('#resultsTable').DataTable().clear().destroy();
+    let row = [];
+    var columns = [];
+
+    $("#resultsTable > tbody").empty();
+    $("#resultsTable > thead").empty();
+
+    //We first set the new columns headers
+    if(results.length > 0){
+        $.each( results[0], function(i, n){
+            let column = {}
+            column.title = i;
+            columns.push(column);
+        });
+
+    }
+
+    //resultsTable.columns = columns;
+    var data = [];
+    for (i =0 ; i < results.length ; i++){
+        row = [];
+        $.each( results[i], function(i, n){
+            row.push(n);
+         });
+         data.push(row);
+    }
+
+    resultsTable = $('#resultsTable').DataTable( {
+        pagingType: "simple", // "simple" option for 'Previous' and 'Next' buttons only
+        pageLength : 5,
+        colums : columns,
+        aoColumns: columns,
+        data : data,
+        lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'All']],
+        bDestroy: true,
+        bFilter: true,
+        select: {
+            style: 'multi',
+            blurable: true
+        },
+        empty:true
+    } );
+
+    resultsTable.draw();
+
+}
+
+function exportSelectedResults(selected){
+    let results;
+    if(selected){
+        results = resultsTable.rows({ selected: true });
+    } else {
+        results = resultsTable.rows();
+    }
+    console.dir(results);
+}

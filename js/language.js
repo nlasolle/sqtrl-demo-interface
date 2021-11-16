@@ -39,17 +39,25 @@ var langData = {
         "Execute SPARQL query",
         "Exécuter la requête"
     ],
+    "executeGeneratedQueryButton" : [
+        "Execute SPARQL query",
+        "Exécuter la requête"
+    ],
     "treeTitle" : [
         "Search history",
         "Historique de recherche"
     ],
     "formBasedTab" : [
-        "Form",
-        "Formulaire"
+        "SPARQL Query generation",
+        "Génération de requêtes SPARQL"
     ],
-    "naturalLanguageTab" : [
-        "Natural Language",
-        "Langage naturel"
+    "sparqlTab" : [
+        "Flexible querying",
+        "Recherche flexible"
+    ],
+    "configurationTab" : [
+        "Configuration",
+        "Configuration"
     ],
     "name": [
         "Name",
