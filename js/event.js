@@ -1,13 +1,12 @@
 
 
 $(document).ready(function () {
-    var currentElement = -1;
-    var nodes = [];
+
+    var currentInitialQuery = ""; 
 
     $("#backwardButton").prop('disabled', true);
     $("#forwardButton").prop('disabled', true);
-    
-    var k = 1;
+
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
@@ -18,51 +17,24 @@ $(document).ready(function () {
 
 
     $('#executeButton').on('click', function () {
-        console.dir(initialQueryEditor.getValue());
-        getQueryResults(initialQueryEditor.getValue());
+        if(!initialQueryEditor.getValue() == currentInitialQuery){
+            currentInitialQuery = initialQueryEditor.getValue();
+            initTransformationProcess(currentInitialQuery);
+            getQueryResults(currentInitialQuery);
+        } 
     });
 
     $('#moreButton').on('click', function () {
-        
-        if(k == 1){
-            addChildToNode("Q", "Q1");
-            let element = {};
-            element.parent = "Q";
-            element.child = "Q1"
-            nodes.push(element);
-            currentElement++;
-            k++;
-        }
-        else if(k == 3){
-            addChildToNode("Q", "Q2");
-            let element = {};
-            element.parent = "Q";
-            element.child = "Q2"
-            nodes.push(element);
-            currentElement++;
-            k++;
-        } else {
-            addChildToNode("Q1", "Q11");
-            let element = {};
-            element.parent = "Q1";
-            element.child = "Q11"
-            nodes.push(element);
-            currentElement++;
-            k++;
-        }
-
+        getNextNode();
         $("#backwardButton").prop('disabled', false);    
     });
 
     $('#backwardButton').on('click', function () {
-        console.log("nodes " + nodes);
-        console.log("current  " + currentElement);
-        console.log("target  " + nodes[currentElement].child);
-
-       $("#" + nodes[currentElement].child).remove();
+    
+       $("#" + nodes[currentElement].id).remove();
        //We remove the level list only if we removed the last child (<ul>), to avoid a black line not related to any node
-       if($('#' + nodes[currentElement].parent + "List").children().length <= 0) {
-        $('#' + nodes[currentElement].parent + "List").remove();
+       if($('#' + nodes[currentElement].parentId + "List").children().length <= 0) {
+        $('#' + nodes[currentElement].parentId + "List").remove();
        }
        currentElement--; 
 
@@ -75,7 +47,7 @@ $(document).ready(function () {
 
     $('#forwardButton').on('click', function () {
         currentElement++;
-        addChildToNode(nodes[currentElement].parent, nodes[currentElement].child);
+        addChildToNode(nodes[currentElement].parentId, nodes[currentElement].id);
 
         if(currentElement == nodes.length -1 ){
             $('#forwardButton').prop('disabled', true);
