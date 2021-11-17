@@ -13,6 +13,8 @@
 body {
     font-family: ''Poppins', sans-serif';
     background: #fafafa;
+    overflow-y: hidden;
+    overflow-x: hidden; 
 }
 
 td:hover {
@@ -91,6 +93,8 @@ a, a:hover, a:focus {
     background: #525155;
     color: #fff;
     transition: all 0.3s;
+    overflow-y: hidden;
+    overflow-x: hidden; 
 }
 
 #sidebar.active {
@@ -151,11 +155,14 @@ ul.CTAs a {
 ----------------------------------------------------- */
 
 #content {
+    height: 400px;
     width: 100%;
     padding: 20px;
     margin: 0 auto;
     min-height: 100vh;
     transition: all 0.3s;
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 /* ---------------------------------------------------
