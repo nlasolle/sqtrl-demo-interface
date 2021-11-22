@@ -60,8 +60,8 @@ var langData = {
         "Configuration"
     ],
     "name": [
-        "Name",
-        "Nom"
+        "Query",
+        "Requête"
     ],
     "globalCostLabel": [
         "Global cost",
@@ -71,13 +71,21 @@ var langData = {
         "Local cost",
         "Coût local"
     ],
+    "explanationLabel": [
+        "Explanation",
+        "Explication"
+    ],
     "hideDetails" : [
         "Hide details",
         "Masquer détails"
     ],
     "appliedRuleLabel" : [
-        "Applied rule",
-        "Règle appliquée"
+        "Rule IRI",
+        "IRI de la règle"
+    ],
+    "appliedRuleDescription" : [
+        "Rule label",
+        "Étiquette de la règle"
     ],
     "queryResults" : [
         "Results",

@@ -1,9 +1,8 @@
 
-
 $(document).ready(function () {
 
     var currentInitialQuery = ""; 
-
+    $('#sidebar').toggleClass('active');
     $("#backwardButton").prop('disabled', true);
     $("#forwardButton").prop('disabled', true);
 
@@ -15,6 +14,9 @@ $(document).ready(function () {
         exportSelectedResults();
     });
 
+    $('#fullScreenButton').on('click', function () {
+        initialQueryEditor.setOption("fullScreen",  !initialQueryEditor.getOption("fullScreen"));
+    });
 
     $('#executeButton').on('click', function () {
         if(!initialQueryEditor.getValue() == currentInitialQuery){
@@ -60,7 +62,7 @@ $(document).ready(function () {
         let value = $("option:selected", this).val();
         lang = langData.tag[value];
         setLanguage(value);
-  });
+    });
 
 
 

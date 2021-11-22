@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Flexible querying system</title>
     <link rel="stylesheet" href="codemirror/codemirror-5.58.2/lib/codemirror.css">
-
+    <link rel="stylesheet" href="codemirror/codemirror-5.58.2/addon/fullscreen.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
         integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -19,6 +19,7 @@
     <script src="codemirror/codemirror-5.58.2/lib/codemirror.js"></script>
     <script src="codemirror/codemirror-5.58.2/addon/edit/matchbrackets.js"></script>
     <script src="codemirror/codemirror-5.58.2/addon/autorefresh.js"></script>
+    <script src="codemirror/codemirror-5.58.2/addon/fullscreen.js"></script>
 
     <link rel="stylesheet" href="css/style.css">
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
@@ -34,29 +35,39 @@
             </div>
             <div style="padding: 3%;">
                 <h2><span id="name"></span> <span id="nameValue"></span></h2>
-                <ul class="list-unstyled components">
-                    <li>
-                        <span id="globalCostLabel"></span>
-                    </li>
-                    <li>
-                        <span id="localCostLabel"></span>
-                    </li>
-                    <li>
-                        <a data-toggle="collapse" aria-expanded="true" class="dropdown-toggle"><span
-                                id="appliedRuleLabel"></span></a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li>
-                                tutu
-                            </li>
-                            <li>
-                                tata
-                            </li>
-                        </ul>
-                    </li>
-
-
-
-                </ul>
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        <span id="appliedRuleLabel"></span> 
+                    </dt>
+                    <dd class="col-sm-8">
+                        <span id="appliedRuleValue"></span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <span id="appliedRuleDescription"></span> 
+                    </dt>
+                    <dd class="col-sm-8">
+                        <span id="appliedRuleDescriptionValue"></span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <span id="localCostLabel"></span> 
+                    </dt>
+                    <dd class="col-sm-8">
+                        <span id="localCostValue"></span>
+                    </dd>
+                    <dt class="col-sm-4">
+                        <span id="globalCostLabel"></span> 
+                    </dt>
+                    <dd class="col-sm-8">
+                        <span id="globalCostValue"></span>
+                    </dd>
+                    
+                    <dt class="col-sm-4">
+                        <span id="explanationLabel"></span> 
+                    </dt>
+                    <dd class="col-sm-8">
+                        <span id="explanationValue"></span>
+                    </dd>
+                </dl>
             </div>
             <div class="sidebar-footer">
                 <button type="button" id="sidebarCollapse" class="btn btn-outline-info btn-block">
@@ -68,7 +79,7 @@
         <!-- Page Content  -->
         <div id="content">
             <div class="row">
-                <div class="col-md-10 left">
+                <div class="col-lg-10 left">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="#tab1" data-toggle="tab"><span
@@ -82,10 +93,10 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-md-1 right" style="padding-top:0.5%; padding-left:5.5%">
+                <div class="col-lg-1 right" style="padding-top:0.5%; padding-left:5.5%">
                     <i class="fa fa-language fa-2x" aria-hidden="true"></i>
                 </div>
-                <div class="col-md-1 right" style="padding-top:0.75%; padding-left:1%;margin:0%">
+                <div class="col-lg-1 right" style="padding-top:0.75%; padding-left:1%;margin:0%">
                     <select class="form-select" id="languageSelect">
                         <option selected value="0">English</option>
                         <option value="1">French</option>
@@ -103,7 +114,7 @@
 
                 <div id="tab2" class="tab-pane fade show">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-header" id="headingOne">
                                     <h5 class="mb-0">
@@ -116,24 +127,35 @@
                                         <form><textarea id="initialSPARQLInput">
 #Example: letters sent by Henri Poincaré to Gosta Mittag-Leffer between 1882 and 1887.
 PREFIX ahpo: <http://e-hp.ahp-numerique.fr/ahpo#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-SELECT ?l ?d
+SELECT ?l ?dest ?d
 WHERE {
-    ?l ahpo:sentBy ?x .
-    ?x ahpo:firstName "Henri" .
+    ?l ahpo:sentBy <http://henripoincare.fr/api/items/843> .
     ?l ahpo:sentTo ?y . 
-    ?l ahpo:writingDate ?d
+    ?y dcterms:title ?dest .
+    ?l ahpo:writingDate ?d .
+    ?l ahpo:citeName <http://henripoincare.fr/api/items/333>
 }  
-LIMIT 50
+LIMIT 50                                                             
                                     </textarea></form>
                                     </div>
-                                    <button type="button" id="sparqlExecutionButton" class="btn btn-outline-info">
-                                        <span id="executeButton"></span>
-                                    </button>
+                                    <div class="row">
+                                        <div class="col-lg-10">
+                                            <button type="button" id="sparqlExecutionButton" class="btn btn-outline-info">
+                                                <span id="executeButton"></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <button type="button" id="fullScreenButton" class="btn btn-outline-secondary">
+                                                <i class="fas fa-expand"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-lg-6">
                             <div class="card">
                                 <div class="card-header" id="headingTwo">
                                     <h5 class="mb-0">
@@ -203,46 +225,6 @@ LIMIT 50
                          
 
                                 <div id="historyTree" class="tree">
-                                    <!-- <ul>
-                                            <li>
-                                                <a href="#">Q</a>
-                                                <ul>
-                                                    <li>
-                                                        <a href="#">Q1</a>
-                                                        <ul>
-                                                            <li>
-                                                                <a href="#">Q11</a>
-
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">Q12</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#">Q2</a>
-                                                        <ul>
-                                                            <ul>
-                                                                <li>
-                                                                    <a href="#">Q21</a>
-                                                                    <ul>
-                                                                        <li>
-                                                                            <a href="#">Q211</a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="#">Q212</a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">Q22</a>
-                                                                </li>
-                                                            </ul>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>-->
                                 </div>
                             </div>
                   
@@ -271,13 +253,30 @@ LIMIT 50
     var initialQueryEditor = CodeMirror.fromTextArea(document.getElementById("initialSPARQLInput"), {
         mode: "application/sparql-query",
         autoRefresh: true,
-        matchBrackets: true
+        matchBrackets: true,
+        extraKeys: {
+        "F11": function(cm) {
+          cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+        },
+        "Esc": function(cm) {
+          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        }
+      }
     });
 
     var generatedQueryEditor = CodeMirror.fromTextArea(document.getElementById("generatedSPARQLInput"), {
         mode: "application/sparql-query",
         autoRefresh: true,
-        matchBrackets: true
+        matchBrackets: true,
+        readOnly: 'nocursor',
+        extraKeys: {
+        "F11": function(cm) {
+          cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+        },
+        "Esc": function(cm) {
+          if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+        }
+      }
     });
 
 </script>

@@ -108,16 +108,36 @@ function initTransformationProcess(query){
     request.onload = function () {
         // Begin accessing JSON data here
         if (request.status == 200) {
-            console.log("SQTRL process initialized.");   
+            console.log("SQTRL process initialized.");  
+            //Retrieve the rules details
+            getRulesDetails();
 
         } else {
-            console.log("An error occured when executing the SPARQL query.");
+            console.log("An error occured when initializing the SQTR process.");
         }
     };
 
     request.send(query);
 }
 
+function getRulesDetails(){
+    "use strict";
+    var request = new XMLHttpRequest();
+
+    request.open("GET", API_PATH + "rules-list", true);
+  
+    request.onload = function () {
+        // Begin accessing JSON data here
+        if (request.status == 200) {
+            console.log("Transformation rules detailled retrieved.");
+            saveRules(this.response);
+        } else {
+            console.log("An error occured when retrieving the rules.");
+        }
+    };
+
+    request.send();
+}
 /**
  * Get the next transformation node (or null if it not exists)
  */

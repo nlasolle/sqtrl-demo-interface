@@ -1,7 +1,7 @@
 var currentElement = -1;
 var nodes = [];
-
-
+var rules = [];
+var initialQueryFormated = false;
 
 /**
  * 
@@ -17,9 +17,15 @@ function addChildToNode(node, child) {
     $("#" + node + "List").append("<li id ='" + child + "'><a id='" + child + "Link'>" + child + "</a>\n</li>");
 
     $('#' + child + "Link").on('click', function () {
-        updateSidebarContent(child);
+        $(".currentQuery").removeClass("currentQuery");
+        $(this).addClass("currentQuery");
+        changeQueryFocus(child);
     });
 
+}
+
+function saveRules(results){
+    rules = JSON.parse(results);
 }
 
 function initTree() {
@@ -32,20 +38,6 @@ function initTree() {
 
     $("#historyTree").append(topNode);
 
-    $('#QLink').on('click', function () {
-        updateSidebarContent("Q");
-    });
-
-}
-
-/**
- * Update the content and render the sidebar (if no visible) 
- * @param {*} node the query node which has been clicked on.
- */
-function updateSidebarContent(node) {
-    $('#sidebar').toggleClass('active', false);
-
-    $('#nameValue').html(node);
 }
 
 function putResultsToTable(results) {
@@ -99,7 +91,8 @@ function putResultsToTable(results) {
             style: 'multi',
             blurable: true
         },
-        empty: true
+        empty: true,
+        autoWidth: true
     });
 
     resultsTable.draw();
@@ -117,13 +110,46 @@ function exportSelectedResults(selected) {
 }
 
 function addTransformationNode(node) {
-    console.dir(node.generatedQuery);
-    generatedQueryEditor.setValue(node.generatedQuery);
-    initialQueryEditor.setValue(node.initialQuery);
+    //The SPARQL engine updates the different query with a special formatting.
+    //For a better readability, we also update the initial query formatting.
 
-    console.log(node.parentId + " id " + node.id)
+    if(!initialQueryFormated) {
+        initialQueryEditor.setValue(node.initialQuery);
+        initialQueryFormated = true;
+    }
+
     addChildToNode(node.parentId, node.id);
-
     nodes.push(node);
     currentElement++;
+
+    $(".currentQuery").removeClass("currentQuery");
+    $("#" + node.id + "Link").addClass("currentQuery");
+    
+    changeQueryFocus(node.id);
+}
+
+/**
+ * Update the content and render the sidebar (if no visible) 
+ * @param {*} id the id of the query node which has been clicked on.
+ */
+function changeQueryFocus(id){
+    console.log(rules);
+  let node = nodes.find(node => node.id == id);
+  let rule = rules.find(rule => rule.iri == node.ruleIri);
+
+
+
+  //Change generated SPARQL query input
+  if(id != "Q"){
+    generatedQueryEditor.setValue(node.generatedQuery);
+  } 
+
+  //Update sidebar content
+  $('#sidebar').toggleClass('active', false);
+  $('#nameValue').html(id);
+  $('#appliedRuleValue').html(node.ruleIri);
+  $('#appliedRuleDescriptionValue').html(rule.label);
+  $('#globalCostValue').html(node.globalCost);
+  $('#localCostValue').html(node.localCost);
+  $('#explanationValue').html(node.explanation);
 }

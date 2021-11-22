@@ -196,12 +196,18 @@ ul.CTAs a {
     height: 200px;
 }
 
+
+.CodeMirror .readOnly {
+    background-color: #ccccccc9;
+    }
+
+
 /* ---------------------------------------------------
     Transformation tree
 ----------------------------------------------------- */
 
 .tree {
-    padding-left: 0%;
+    padding-left: 25%;
     margin: 0 auto;
 }
 
@@ -319,8 +325,16 @@ right connector from last child*/
     cursor: pointer;
 }
 
+
 /*Connector styles on hover*/
 
 .tree li a:hover {
     border-color: #94a0b4;
+}
+
+.currentQuery {
+    background: #c8f8d0;
+    color: #000;
+    border: 1px solid #94a0b4;
+    cursor: pointer;
 }
