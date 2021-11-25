@@ -7,6 +7,11 @@ var langData = {
       "Flexible querying system",
       "Système de recherche flexible"
     ],
+    "noResultMessage": [
+        "No results for the generated SPARQL query: only initial query results are displayed.",
+        "Aucun résultat pour la requête SPARQL générée : seuls les résultats de la requête initiale sont affichés."
+      ],
+    
     "sparqlQuery" : [
         "Initial SPARQL query",
         "Requête SPARQL initiale"
@@ -78,6 +83,10 @@ var langData = {
     "hideDetails" : [
         "Hide details",
         "Masquer détails"
+    ],
+    "hideResultsLabel" : [
+        "Hide/show results",
+        "Masquer/afficher les résultats"
     ],
     "appliedRuleLabel" : [
         "Rule IRI",

@@ -1,6 +1,7 @@
 var currentElement = -1;
 var nodes = [];
 var rules = [];
+var initialResults = [];
 var initialQueryFormated = false;
 
 /**
@@ -24,7 +25,7 @@ function addChildToNode(node, child) {
 
 }
 
-function saveRules(results){
+function saveRules(results) {
     rules = JSON.parse(results);
 }
 
@@ -40,7 +41,18 @@ function initTree() {
 
 }
 
-function putResultsToTable(results) {
+/**
+ * Put the results in the table, and aggregate with different colors if it is a generated query
+ * @param {*} results the SPARQL query execution results
+ * @param {*} initial indicates if the results are for the initial SPARQL query (true) or a generated query (false)
+ */
+function putResultsToTable(results, initial) {
+
+    if (results.length == 0) {
+        let value = $("option:selected", $("#languageSelect")).val();
+        alert(langData.noResultMessage[value]);
+        putResultsToTable(initialResults, true); //We set back the initial query results if there is no results.
+    }
 
 
     $('#resultsTable').DataTable().clear().destroy();
@@ -61,23 +73,49 @@ function putResultsToTable(results) {
     }
 
     //resultsTable.columns = columns;
-    var data = [];
-    for (i = 0; i < results.length; i++) {
-        row = [];
-        $.each(results[i], function (i, n) {
-            row.push(n);
-        });
-        data.push(row);
+    var data;
+
+    if (initial) {
+        data = [];
+        for (i = 0; i < results.length; i++) {
+            row = [];
+            $.each(results[i], function (i, n) {
+                row.push(n);
+            });
+            data.push(row);
+        }
+        initialResults = data;
+
+    } else {
+        data = initialResults.slice();
+
+        for (i = 0; i < results.length; i++) {
+            row = [];
+            $.each(results[i], function (i, n) {
+                row.push(n);
+            });
+
+            if (isArrayInArray(data,row)) {
+                console.log("already containing row");
+            } else {
+                data.push(row);
+            }
+        }
     }
+    console.log(initialResults);
+    console.log(initialResults.length);
+    console.log(data);
+    console.log(data.length);
 
     resultsTable = $('#resultsTable').DataTable({
         pagingType: "simple", // "simple" option for 'Previous' and 'Next' buttons only
         createdRow: function (row, data, dataIndex) {
             console.log(data);
             console.log(row);
-            if (data[2] == `http://henripoincare.fr/api/items/3674`) {
-                alert("toto");
-                $(row).addClass('redClass');
+            console.log("index" + dataIndex);
+            //Different color to distinguish new results
+            if (!isArrayInArray(initialResults, data)) {
+                $(row).addClass('newResultRow');
             }
         },
         pageLength: 5,
@@ -113,7 +151,7 @@ function addTransformationNode(node) {
     //The SPARQL engine updates the different query with a special formatting.
     //For a better readability, we also update the initial query formatting.
 
-    if(!initialQueryFormated) {
+    if (!initialQueryFormated) {
         initialQueryEditor.setValue(node.initialQuery);
         initialQueryFormated = true;
     }
@@ -124,7 +162,7 @@ function addTransformationNode(node) {
 
     $(".currentQuery").removeClass("currentQuery");
     $("#" + node.id + "Link").addClass("currentQuery");
-    
+
     changeQueryFocus(node.id);
 }
 
@@ -132,24 +170,33 @@ function addTransformationNode(node) {
  * Update the content and render the sidebar (if no visible) 
  * @param {*} id the id of the query node which has been clicked on.
  */
-function changeQueryFocus(id){
+function changeQueryFocus(id) {
     console.log(rules);
-  let node = nodes.find(node => node.id == id);
-  let rule = rules.find(rule => rule.iri == node.ruleIri);
+    let node = nodes.find(node => node.id == id);
+    let rule = rules.find(rule => rule.iri == node.ruleIri);
 
 
 
-  //Change generated SPARQL query input
-  if(id != "Q"){
-    generatedQueryEditor.setValue(node.generatedQuery);
-  } 
+    //Change generated SPARQL query input
+    if (id != "Q") {
+        generatedQueryEditor.setValue(node.generatedQuery);
+    }
 
-  //Update sidebar content
-  $('#sidebar').toggleClass('active', false);
-  $('#nameValue').html(id);
-  $('#appliedRuleValue').html(node.ruleIri);
-  $('#appliedRuleDescriptionValue').html(rule.label);
-  $('#globalCostValue').html(node.globalCost);
-  $('#localCostValue').html(node.localCost);
-  $('#explanationValue').html(node.explanation);
+    //Update sidebar content
+    $('#sidebar').toggleClass('active', false);
+    $('#nameValue').html(id);
+    $('#appliedRuleValue').html(node.ruleIri);
+    $('#appliedRuleDescriptionValue').html(rule.label);
+    $('#globalCostValue').html(node.globalCost);
+    $('#localCostValue').html(node.localCost);
+    $('#explanationValue').html(node.explanation);
 }
+
+function isArrayInArray(arr, item){
+    var item_as_string = JSON.stringify(item);
+  
+    var contains = arr.some(function(ele){
+      return JSON.stringify(ele) === item_as_string;
+    });
+    return contains;
+  }

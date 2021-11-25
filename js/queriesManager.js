@@ -75,7 +75,7 @@ function listPrefixes(){
 /**
  * Execute and get the results for a given SPARQL query
  */
-function getQueryResults(query){
+function getQueryResults(query, initial){
     "use strict";
     var request = new XMLHttpRequest();
 
@@ -86,7 +86,7 @@ function getQueryResults(query){
         // Begin accessing JSON data here
         if (request.status == 200) {
             console.log("SPARQL Query executed.");
-            putResultsToTable(JSON.parse(this.response));
+            putResultsToTable(JSON.parse(this.response), initial);
 
         } else {
             console.log("An error occured when executing the SPARQL query.");
@@ -151,8 +151,12 @@ function getNextNode(){
         // Begin accessing JSON data here
         if (request.status == 200) {
             console.log("Next transformation node retrieved");
-            console.dir(JSON.parse(this.response));
-            addTransformationNode(JSON.parse(this.response));
+            
+            let node = JSON.parse(this.response);
+            console.dir(node);
+            addTransformationNode(node);
+            getQueryResults(node.generatedQuery, false);
+            
 
         } else {
             console.log("An error occured when retrieving the transformation node.");
