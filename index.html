@@ -106,7 +106,90 @@
 
             <div class="tab-content" style="padding-top: 1em;">
                 <div id="tab1" class="tab-pane fade show active">
+                    <div class="container-fluid" style="padding-top: 10px; padding-left:4%; padding-right:4%">
+                        <div class="form-group">
+                            <!--<h2>Select the type of the targeted resource and fill in the form inputs</h2>-->
+                            <div class="form-group">
+                                <label for="resultsLimitSelect">Document type</label>
+                                <select class="form-control" id="resultsLimitSelect">
+                                    <option>Article</option>
+                                    <option>Document</option>
+                                    <option>Journal</option>
+                                    <option>Letter</option>
+                                    <option>Publisher</option>
+                                    <option>Report</option>
+                                    <option>Thesis</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-7" style="padding:1%;">
+                                    <h3>Search options</h3>
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            <label for="firstNameInput">First name</label>
+                                            <input type="text" class="form-control" id="firstNameInput" />
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="familyNameInput">Family name</label>
+                                            <input type="text" class="form-control" id="familyNameInput" />
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="nationalitySelect">Nationality</label>
+                                            <select class="form-control" id="nationalitySelect">
+                                                <option></option>
+                                                <option>French</option>
+                                                <option>English</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-4">
+                                            <label for="occupationSelect">Occupation</label>
+                                            <select class="form-control" id="occupationSelect">
+                                                <option></option>
+                                                <option>Mathematician</option>
+                                                <option></option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="placeInput">Place of residence</label>
+                                            <input type="text" class="form-control" id="placeInput" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-2" style="padding-top:1%;">
+                                            <h4>Birth date</h4>
+                                        </div>
+                                        <div class="form-group col-md-3" style="padding-top:1%;">
+                                            <select class="form-control" id="resultsLimitSelect">
+                                                <option>Between</option>
+                                                <option>Before</option>
+                                                <option>After</option>
+                                                <option>Equal</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3" style="padding-top:1%;">
+                                            <input type="date" class="form-control" id="minDateInput" />
+                                        </div>
+                                        <div class="form-group col-md-1" style="padding-top:1%;">
+                                            <h4>and</h4>
+                                        </div>
+                                        <div class="form-group col-md-3" style="padding-top:1%;">
+                                            <input type="date" class="form-control" id="maxDateInput" />
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div style="padding-top:2%;">
+                                    <button id="transformButton" type="button" class="btn btn-outline-primary">
+                                        Generate query and get results
+                                    </button>
+                                </div>
 
+                            </div>
+                        
+                        </div>
+                    </div>
                     <button type="button" id="sparqlGenerationButton" class="btn btn-outline-info">
                         <span id="generateButton"></span>
                     </button>
@@ -129,13 +212,13 @@
 PREFIX ahpo: <http://e-hp.ahp-numerique.fr/ahpo#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-SELECT ?l ?corres ?d
+SELECT ?letter ?corres ?writingDate
 WHERE {
-    ?l ahpo:sentBy <http://henripoincare.fr/api/items/843> .
-    ?l ahpo:sentTo ?y . 
+    ?letter ahpo:sentBy <http://henripoincare.fr/api/items/843> .
+    ?letter ahpo:sentTo ?y . 
     ?y dcterms:title ?corres .
-    ?l ahpo:writingDate ?d .
-    ?l ahpo:citeName <http://henripoincare.fr/api/items/333>
+    ?letter ahpo:writingDate ?writingDate .
+    ?letter ahpo:citeName <http://henripoincare.fr/api/items/333>
 }  
 LIMIT 50                                                             
                                     </textarea></form>
@@ -196,17 +279,6 @@ LIMIT 50
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Lettre</th>
-                                        <th scope="col">Titre</th>
-                                        <th scope="col">Expéditeur</th>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Lettre</th>
-                                        <th scope="col">Titre</th>
-                                        <th scope="col">Expéditeur</th>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Lettre</th>
-                                        <th scope="col">Titre</th>
-                                        <th scope="col">Expéditeur</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -256,6 +328,7 @@ LIMIT 50
 <script type="text/javascript" src="js/language.js"></script>
 <script type="text/javascript" src="js/data.js"></script>
 <script type="text/javascript" src="js/queriesManager.js"></script>
+<script type="text/javascript" src="js/export.js"></script>
 <script type="text/javascript" src="js/event.js"></script>
 <script type="text/javascript" src="js/sparql.js"></script>
 <script>

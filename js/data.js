@@ -2,6 +2,7 @@ var currentElement = -1;
 var nodes = [];
 var rules = [];
 var initialResults = [];
+var fullResults = [];
 var initialQueryFormated = false;
 
 /**
@@ -15,7 +16,8 @@ function addChildToNode(node, child) {
         $("#" + node).append("<ul id='" + node + "List'>\n</ul>");
     }
 
-    $("#" + node + "List").append("<li id ='" + child + "'><a id='" + child + "Link'>" + child + "</a>\n</li>");
+    let nodeDisplayedValue = "Q<sub>" + child.substring(1) + "</sub>";
+    $("#" + node + "List").append("<li id ='" + child + "'><a id='" + child + "Link'>" + nodeDisplayedValue + "</a>\n</li>");
 
     $('#' + child + "Link").on('click', function () {
         $(".currentQuery").removeClass("currentQuery");
@@ -140,11 +142,12 @@ function putResultsToTable(results, initial) {
 function exportSelectedResults(selected) {
     let results;
     if (selected) {
-        results = resultsTable.rows({ selected: true });
+        results = resultsTable.rows({ selected: true }).data();
     } else {
-        results = resultsTable.rows();
+        results = resultsTable.rows().data();
     }
-    console.dir(results);
+    downloadCSV(results);
+    console.dir(resultsTable);
 }
 
 function addTransformationNode(node) {
@@ -184,7 +187,7 @@ function changeQueryFocus(id) {
 
     //Update sidebar content
     $('#sidebar').toggleClass('active', false);
-    $('#nameValue').html(id);
+    $('#nameValue').html("Q<sub>" + id.substring(1) + "</sub>");
     $('#appliedRuleValue').html(node.ruleIri);
     $('#appliedRuleDescriptionValue').html(rule.label);
     $('#globalCostValue').html(node.globalCost);
