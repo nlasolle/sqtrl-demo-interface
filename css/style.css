@@ -78,6 +78,11 @@ a, a:hover, a:focus {
     margin: 40px 0;
 }
 
+
+#generatedQueryCard .CodeMirror{
+    background-color: #f1f1f1e7;
+}
+
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */

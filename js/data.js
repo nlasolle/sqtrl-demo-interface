@@ -52,8 +52,19 @@ function putResultsToTable(results, initial) {
 
     if (results.length == 0) {
         let value = $("option:selected", $("#languageSelect")).val();
-        alert(langData.noResultMessage[value]);
-        putResultsToTable(initialResults, true); //We set back the initial query results if there is no results.
+
+        //No results for the initial query
+        if(initial) {
+            alert(langData.noResultInitialMessage[value]);
+            return;
+        } 
+        //No results for a generated query: we show the initial query only
+        else {
+            //alert(langData.noResultMessage[value]);
+            putResultsToTable(initialResults, true); //We set back the initial query results if there is no results.
+            return;
+        }
+     
     }
 
 
@@ -178,20 +189,21 @@ function changeQueryFocus(id) {
     let node = nodes.find(node => node.id == id);
     let rule = rules.find(rule => rule.iri == node.ruleIri);
 
-
-
     //Change generated SPARQL query input
     if (id != "Q") {
         generatedQueryEditor.setValue(node.generatedQuery);
     }
+
+    //Update results table
+    //getQueryResults(node.generatedQuery , false );
 
     //Update sidebar content
     $('#sidebar').toggleClass('active', false);
     $('#nameValue').html("Q<sub>" + id.substring(1) + "</sub>");
     $('#appliedRuleValue').html(node.ruleIri);
     $('#appliedRuleDescriptionValue').html(rule.label);
-    $('#globalCostValue').html(node.globalCost);
-    $('#localCostValue').html(node.localCost);
+    $('#globalCostValue').html(node.globalCost.toFixed(2));
+    $('#localCostValue').html(node.localCost.toFixed(2));
     $('#explanationValue').html(node.explanation);
 }
 

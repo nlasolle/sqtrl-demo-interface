@@ -11,7 +11,10 @@ var langData = {
         "No results for the generated SPARQL query: only initial query results are displayed.",
         "Aucun résultat pour la requête SPARQL générée : seuls les résultats de la requête initiale sont affichés."
       ],
-    
+      "noResultInitialMessage": [
+        "No results for the initial SPARQL query: please use flexible search to generate alternative queries.",
+        "Aucun résultat pour la requête SPARQL. Vous pouvez essayer d'utiliser le bouton de recherche flexible pour générer des requêtes alternatives."
+      ],
     "sparqlQuery" : [
         "Initial SPARQL query",
         "Requête SPARQL initiale"
