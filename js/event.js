@@ -25,7 +25,7 @@ $(document).ready(function () {
     $('#executeButton').on('click', function () {
         $(this).prop("disabled", true);
         initTransformationProcess(initialQueryEditor.getValue());
-        getQueryResults(initialQueryEditor.getValue(), true);
+        getQueryResults(initialQueryEditor.getValue(), true, "Q");
     });
 
     $('#moreButton').on('click', function () {

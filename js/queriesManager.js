@@ -1,5 +1,5 @@
 var API_PATH = "http://localhost:8080/sqtrl/";
-var results;
+var savedResults = {};
 
 /**
  * Load a list of rules from a given file
@@ -75,7 +75,7 @@ function listPrefixes(){
 /**
  * Execute and get the results for a given SPARQL query
  */
-function getQueryResults(query, initial){
+function getQueryResults(query, initial, nodeId){
     "use strict";
     var request = new XMLHttpRequest();
 
@@ -86,7 +86,13 @@ function getQueryResults(query, initial){
         // Begin accessing JSON data here
         if (request.status == 200) {
             console.log("SPARQL Query executed.");
-            putResultsToTable(JSON.parse(this.response), initial);
+       
+            let res = JSON.parse(this.response);
+            //Results are saved using a var containing all executed queries results
+            console.log("NODE IDDD" + nodeId);
+            savedResults[nodeId] = res;
+            //Update of the table presenting results
+            putResultsToTable(res, initial);
 
         } else {
             console.log("An error occured when executing the SPARQL query.");
@@ -150,13 +156,16 @@ function getNextNode(){
     request.onload = function () {
         // Begin accessing JSON data here
         if (request.status == 200) {
-            console.log("Next transformation node retrieved");
-            
-            let node = JSON.parse(this.response);
-            console.dir(node);
-            addTransformationNode(node);
-            getQueryResults(node.generatedQuery, false);
-            
+            console.log("Next transformation node retrieved"); 
+            if(this.response) {
+                let node = JSON.parse(this.response);
+                console.log("node id " + node.id); 
+                getQueryResults(node.generatedQuery, false, node.id);   
+                addTransformationNode(node);               
+            } else {
+                alert("No more transformation available");
+            }
+           
 
         } else {
             console.log("An error occured when retrieving the transformation node.");

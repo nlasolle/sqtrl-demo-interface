@@ -158,7 +158,6 @@ function exportSelectedResults(selected) {
         results = resultsTable.rows().data();
     }
     downloadCSV(results);
-    console.dir(resultsTable);
 }
 
 function addTransformationNode(node) {
@@ -185,17 +184,20 @@ function addTransformationNode(node) {
  * @param {*} id the id of the query node which has been clicked on.
  */
 function changeQueryFocus(id) {
-    console.log(rules);
     let node = nodes.find(node => node.id == id);
     let rule = rules.find(rule => rule.iri == node.ruleIri);
-
+    console.log("SAVED");
+    console.dir(savedResults);
     //Change generated SPARQL query input
     if (id != "Q") {
         generatedQueryEditor.setValue(node.generatedQuery);
+         //Update results table
+        putResultsToTable(savedResults[id], false);
+    } else {
+        putResultsToTable(savedResults[id], true);
     }
 
-    //Update results table
-    //getQueryResults(node.generatedQuery , false );
+   
 
     //Update sidebar content
     $('#sidebar').toggleClass('active', false);
@@ -204,7 +206,7 @@ function changeQueryFocus(id) {
     $('#appliedRuleDescriptionValue').html(rule.label);
     $('#globalCostValue').html(node.globalCost.toFixed(2));
     $('#localCostValue').html(node.localCost.toFixed(2));
-    $('#explanationValue').html(node.explanation);
+    $('#explanationValue').html(node.explanation.replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
 }
 
 function isArrayInArray(arr, item){
